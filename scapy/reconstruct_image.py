@@ -26,7 +26,7 @@ for packet in pcap_file:
 # decode the string with all of the payload data
 image_data_decode = base64.decodestring(image_data)
 
-# get the MIME type of the image and 
+# get the MIME type of the image 
 image_type = imghdr.what(None, image_data_decode)
 
 if image_type is not None:
