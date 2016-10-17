@@ -17,15 +17,25 @@ image_data = ""
 
 # loop through each packet and add payload to above string
 for packet in pcap_file:
-    image_data = "%s%s" % (image_data, packet.load)
+    try:
+        image_data = "%s%s" % (image_data, packet.load)
+    except:
+        print "ERROR: Proper payload data not found."
+        exit()
 
 # decode the string with all of the payload data
 image_data_decode = base64.decodestring(image_data)
 
-# get the MIME type of the image and determine which file extension is appropriate for saving it
+# get the MIME type of the image and 
 image_type = imghdr.what(None, image_data_decode)
-image_ext = mimetypes.guess_extension("image/{0}".format(image_type))
-image_name = "picture{0}".format(image_ext)
+
+if image_type is not None:
+    # determine which file extension is appropriate for saving it
+    image_ext = mimetypes.guess_extension("image/{0}".format(image_type))
+    image_name = "picture{0}".format(image_ext)
+else:
+    print "ERROR: Image not found in PCAP."
+    quit()
 
 # write the decoded data to a file named picture.EXT (where EXT is the extension determined above)
 image_file = open(image_name, "w")
