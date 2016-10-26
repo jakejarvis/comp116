@@ -9,15 +9,15 @@ from scapy.all import *
 
 alarm_count = 0
 
+
 def live_scan(interface):
     print "Sniffing interface %s..." % interface
+
     try:
         sniffed = sniff(iface=interface, prn=check_packet)
     except:
         print "ERROR: Network interface failed"
         exit()
-
-
 
 def pcap_scan(file):
     print "Scanning %s..." % file
@@ -121,8 +121,10 @@ def check_packet(packet):
     check_nikto(packet[0])
 
     # 7. Rob Graham's Masscan
+    # NOT IMPLEMENTED :(
 
     # 9. Shellshock vulnerability scan
+    # NOT IMPLEMENTED :(
 
     # 10. phpMyAdmin
     check_PMA(packet[0])
