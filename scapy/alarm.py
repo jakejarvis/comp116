@@ -7,7 +7,7 @@ import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)   # https://stackoverflow.com/questions/13249341/surpress-scapy-warning-message-when-importing-the-module
 from scapy.all import *
 
-alert_count = 0
+alarm_count = 0
 
 def live_scan(interface):
     print "Sniffing interface %s..." % interface
@@ -16,8 +16,6 @@ def live_scan(interface):
     except:
         print "ERROR: Network interface failed"
         exit()
-
-
 
 
 
@@ -35,7 +33,6 @@ def pcap_scan(file):
 
 
 
-
 # 1. NULL scan
 def check_null(packet):
     if packet.haslayer(TCP) and packet[TCP].flags == 0:
@@ -45,13 +42,11 @@ def check_null(packet):
 def check_fin(packet):
     if packet.haslayer(TCP) and packet[TCP].flags == 1:
         alarm(packet, "FIN scan", "TCP", "")
-#    return (packet.haslayer(TCP) and packet[TCP].flags == 0x01)
 
 # 2. Xmas scan
 def check_xmas(packet):
     if packet.haslayer(TCP) and packet[TCP].flags == 41:
         alarm(packet, "Xmas scan", "TCP", "Merry Christmas!")
-
 
 # 4. Usernames and passwords sent in-the-clear
 def check_cleartext(packet):
@@ -73,7 +68,6 @@ def check_cleartext(packet):
     if packet.haslayer(TCP) and packet[TCP].dport == 21 and packet.haslayer(Raw):
         if "USER" in packet.load or "PASS" in packet.load:
             alarm(packet, "FTP credential", "FTP", packet.load)
-
 
 # 5. Credit card numbers sent in-the-clear
 def check_cc(packet):
@@ -136,9 +130,9 @@ def check_packet(packet):
 
 
 def alarm(packet, vul, proto, info):
-    global alert_count
-    alert_count += 1
-    print "ALERT #%s: %s is detected from %s (%s) (%s)!" % (alert_count, vul, packet[0][IP].src, proto, info)
+    global alarm_count
+    alarm_count += 1
+    print "ALERT #%s: %s is detected from %s (%s) (%s)!" % (alarm_count, vul, packet[0][IP].src, proto, info)
 
 
 
@@ -177,6 +171,7 @@ def main(argv):
         pcap_scan(file)
     else:
         live_scan("eth0")
+
 
 
 if __name__ == "__main__":
